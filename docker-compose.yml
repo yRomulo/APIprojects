@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: apiprojects_db
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: apiprojects
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+    container_name: apiprojects_api
+    depends_on:
+      - db
+    environment:
+      PORT: 3333
+      JWT_SECRET: "change-me"
+      DATABASE_URL: "postgresql://app:app@db:5432/apiprojects?schema=public"
+    ports:
+      - "3333:3333"
+    command: sh -c "npx prisma migrate deploy && node dist/src/server.js"
+
+volumes:
+  db_data:
