@@ -1,4 +1,58 @@
 export const schemas = {
+  /* ================= AUTH ================= */
+
+  LoginDto: {
+    type: "object",
+    required: ["email", "password"],
+    properties: {
+      email: {
+        type: "string",
+        format: "email",
+        example: "romulo@email.com",
+      },
+      password: {
+        type: "string",
+        format: "password",
+        example: "123456",
+      },
+    },
+  },
+
+  LoginResponse: {
+    type: "object",
+    properties: {
+      message: {
+        type: "string",
+        example: "Login successful",
+      },
+      token: {
+        type: "string",
+        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+      },
+      user: {
+        $ref: "#/components/schemas/UserResponse",
+      },
+    },
+  },
+
+  UserResponse: {
+    type: "object",
+    properties: {
+      id: {
+        type: "string",
+        example: "clx123abc",
+      },
+      name: {
+        type: "string",
+        example: "Rômulo Dias",
+      },
+      email: {
+        type: "string",
+        example: "romulo@email.com",
+      },
+    },
+  },
+
   /* ================= USERS ================= */
 
   CreateUserDTO: {
@@ -64,15 +118,15 @@ export const schemas = {
 
   CreateProjectDTO: {
     type: "object",
-    required: ["title", "userId"],
+    required: ["title"],
     properties: {
       title: {
         type: "string",
         example: "Sistema ERP",
       },
-      userId: {
+      description: {
         type: "string",
-        example: "clx123abc",
+        example: "Sistema de gestão empresarial",
       },
     },
   },
@@ -88,11 +142,24 @@ export const schemas = {
         type: "string",
         example: "Sistema ERP",
       },
+      description: {
+        type: "string",
+        example: "Sistema de gestão empresarial",
+      },
+      status: {
+        type: "string",
+        enum: ["NEW", "IN_PROGRESS", "DONE"],
+        example: "NEW",
+      },
       userId: {
         type: "string",
         example: "clx123abc",
       },
       createdAt: {
+        type: "string",
+        format: "date-time",
+      },
+      updatedAt: {
         type: "string",
         format: "date-time",
       },
@@ -105,6 +172,15 @@ export const schemas = {
       title: {
         type: "string",
         example: "Sistema ERP Atualizado",
+      },
+      description: {
+        type: "string",
+        example: "Sistema de gestão empresarial atualizado",
+      },
+      status: {
+        type: "string",
+        enum: ["NEW", "IN_PROGRESS", "DONE"],
+        example: "IN_PROGRESS",
       },
     },
   },

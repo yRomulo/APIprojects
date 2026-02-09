@@ -17,6 +17,15 @@ const swaggerOptions: swaggerJsdoc.Options = {
     ],
     components: {
       schemas,
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+          description:
+            "JWT Authorization header usando o Bearer scheme. Ex: Authorization: Bearer {token}",
+        },
+      },
     },
   },
 

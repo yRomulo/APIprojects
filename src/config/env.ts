@@ -8,4 +8,10 @@ export const env = {
     }
     return process.env.DATABASE_URL;
   })(),
+  JWT_SECRET: (() => {
+    if (!process.env.JWT_SECRET) {
+      throw new Error("JWT_SECRET is not defined");
+    }
+    return process.env.JWT_SECRET;
+  })(),
 };

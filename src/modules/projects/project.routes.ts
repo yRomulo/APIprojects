@@ -7,8 +7,9 @@ import {
   updateProjectController,
   deleteProjectController,
 } from "./project.controller.js";
+import { authMiddleware } from "../../middlewares/auth.middleware.js";
 
-const router = Router();
+const projectsRouter = Router();
 
 /**
  * @swagger
@@ -33,8 +34,10 @@ const router = Router();
  *               items:
  *                 $ref: '#/components/schemas/Project'
  *   post:
- *     summary: Criar projeto
+ *     summary: Criar projeto (requer autenticação)
  *     tags: [Projects]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -48,35 +51,35 @@ const router = Router();
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Project'
+ *       401:
+ *         description: Não autenticado
  *       500:
  *         description: Erro interno
  */
-router.get("/", listAllProjectsController);
-router.post("/", createProjectController);
+projectsRouter.get("/", listAllProjectsController);
+projectsRouter.post("/", authMiddleware, createProjectController);
 
 /**
  * @swagger
- * /projects/user/{userId}:
+ * /projects/user/me:
  *   get:
- *     summary: Listar projetos de um usuário
+ *     summary: Listar meus projetos (requer autenticação)
  *     tags: [Projects]
- *     parameters:
- *       - in: path
- *         name: userId
- *         required: true
- *         schema:
- *           type: string
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Lista de projetos
+ *         description: Lista de meus projetos
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Project'
+ *       401:
+ *         description: Não autenticado
  */
-router.get("/user/:userId", listProjectsController);
+projectsRouter.get("/user/me", authMiddleware, listProjectsController);
 
 /**
  * @swagger
@@ -100,14 +103,16 @@ router.get("/user/:userId", listProjectsController);
  *       404:
  *         description: Projeto não encontrado
  */
-router.get("/:projectId", getProjectByIdController);
+projectsRouter.get("/:projectId", getProjectByIdController);
 
 /**
  * @swagger
  * /projects/{projectId}:
  *   put:
- *     summary: Atualizar projeto
+ *     summary: Atualizar projeto (requer autenticação)
  *     tags: [Projects]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: projectId
@@ -127,15 +132,21 @@ router.get("/:projectId", getProjectByIdController);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Project'
+ *       401:
+ *         description: Não autenticado
+ *       403:
+ *         description: Sem permissão
  */
-router.put("/:projectId", updateProjectController);
+projectsRouter.put("/:projectId", authMiddleware, updateProjectController);
 
 /**
  * @swagger
  * /projects/{projectId}:
  *   delete:
- *     summary: Deletar projeto
+ *     summary: Deletar projeto (requer autenticação)
  *     tags: [Projects]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: projectId
@@ -145,7 +156,11 @@ router.put("/:projectId", updateProjectController);
  *     responses:
  *       204:
  *         description: Projeto removido
+ *       401:
+ *         description: Não autenticado
+ *       403:
+ *         description: Sem permissão
  */
-router.delete("/:projectId", deleteProjectController);
+projectsRouter.delete("/:projectId", authMiddleware, deleteProjectController);
 
-export default router;
+export default projectsRouter;
